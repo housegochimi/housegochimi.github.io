@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    {% include head.html %}
+</head>
+<body id="page-top" class="index">
+
+    <!-- 포스트 전용 상단 네비게이션 -->
+    <nav class="navbar navbar-default navbar-fixed-top navbar-shrink">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <a class="navbar-brand" href="/">{{ site.title }}</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 포스트 본문 영역 -->
+    <section id="post-content-section" style="padding-top: 150px; padding-bottom: 80px; background-color: #fff;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2">
+                    
+                    <p class="text-muted" style="font-size: 15px; margin-bottom: 10px;">
+                        {% if page.category %}
+                        <span class="label label-primary">{{ page.category }}</span>
+                        {% endif %}
+                        <span style="margin-left: 8px;">{{ page.date | date: "%Y년 %m월 %d일" }}</span>
+                    </p>
+
+                    <h1 style="font-weight: bold; margin-bottom: 25px; color: #333;">{{ page.title }}</h1>
+                    <hr style="margin-bottom: 30px;">
+
+                    <!-- 실제 마크다운 글 본문 -->
+                    <div class="post-body" style="color: #333;">
+                        <style>
+                            .post-body * {
+                                font-size: 20px !important;
+                                line-height: 1.8 !important;
+                            }
+                        </style>
+                        {{ content }}
+                    </div>
+
+                    <hr style="margin-top: 50px; margin-bottom: 40px;">
+
+                    <!-- 비슷한/관련 작업 사례 리스트 영역 -->
+                    {% if page.category %}
+                    {% assign related_posts = site.posts | where: "category", page.category %}
+                    {% if related_posts.size > 1 %}
+                    <div id="related-posts" style="background-color: #f9f9f9; border: 1px solid #eee; border-radius: 6px; padding: 25px; margin-bottom: 40px;">
+                        <h4 style="font-weight: bold; margin-bottom: 20px; color: #333;">
+                            <i class="related-posts" style="margin-right: 8px;"></i>관련 시공 사례
+                        </h4>
+                        <ul style="list-style: none; padding-left: 0; margin-bottom: 0;">
+                            {% assign count = 0 %}
+                            {% for post in related_posts %}
+                                {% if post.url != page.url and count < 5 %}
+                                <li style="padding: 10px 0; border-bottom: 1px dashed #ddd; display: flex; justify-content: space-between; align-items: center;">
+                                    <a href="{{ post.url | relative_url }}" style="color: #333; font-weight: 500; text-decoration: none; font-size: 16px;">
+                                        • {{ post.title }}
+                                    </a>
+                                    <span class="text-muted" style="font-size: 13px; min-width: 90px; text-align: right;">{{ post.date | date: "%Y.%m.%d" }}</span>
+                                </li>
+                                {% assign count = count | plus: 1 %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-lg-12 text-center">
+                            <a href="/" class="btn btn-primary btn-lg" style="margin-right: 8px;">메인으로 돌아가기</a>
+                            <a href="/repair/" class="btn btn-default btn-lg" style="border: 1px solid #ccc;">전체 작업 사례 보기</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include footer.html %}
+    {% include js.html %}
+
+</body>
+</html>
+
+
+
+<!-- 영문 region을 한글 지역명으로 변환 -->
+{% assign region_slug = page.region %}
+{% case region_slug %}
+    {% when 'daegu' %}{% assign region_name = '대구광역시' %}
+    {% when 'gangwon' %}{% assign region_name = '강원도' %}
+    {% when 'jeonbuk' %}{% assign region_name = '전라북도' %}
+    {% when 'jeonnam' %}{% assign region_name = '전라남도' %}
+    {% when 'gyeongbuk' %}{% assign region_name = '경상북도' %}
+    {% when 'gyeongnam' %}{% assign region_name = '경상남도' %}
+    {% when 'gwangju' %}{% assign region_name = '광주광역시' %}
+    {% when 'ulsan' %}{% assign region_name = '울산광역시' %}
+    {% when 'busan' %}{% assign region_name = '부산광역시' %}
+    {% else %}{% assign region_name = page.region %}
+{% endcase %}
+
+<!-- 검색엔진 노출용 BreadcrumbList 구조화 데이터 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "홈",
+      "item": "{{ site.url }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "{{ region_name }}",
+      "item": "{{ site.url }}/region={{ page.region }}/"
+    },
+    {% if page.category %}
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ page.category }}",
+      "item": "{{ site.url }}/repair/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "{{ page.title }}"
+    }
+    {% else %}
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ page.title }}"
+    }
+    {% endif %}
+  ]
+}
+</script>

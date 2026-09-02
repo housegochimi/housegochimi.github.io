@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    {% include head.html %}
+    <!-- 노란색 페이지네이션 & 검색 버튼 커스텀 스타일 -->
+    <style>
+        /* 페이지네이션 기본 스타일 */
+        .pagination > li > a, 
+        .pagination > li > span {
+            color: #333 !important;
+            background-color: #fff !important;
+            border: 1px solid #ddd !important;
+        }
+
+        .pagination > li > a:hover, 
+        .pagination > li > a:focus {
+            color: #333 !important;
+            background-color: #f7e7a1 !important;
+            border-color: #f0c040 !important;
+        }
+
+        .pagination > .active > a, 
+        .pagination > .active > span, 
+        .pagination > .active > a:hover, 
+        .pagination > .active > span:hover, 
+        .pagination > .active > a:focus, 
+        .pagination > .active > span:focus {
+            color: #333 !important;
+            font-weight: bold !important;
+            background-color: #f0c040 !important;
+            border-color: #f0c040 !important;
+        }
+
+        .pagination > .disabled > span, 
+        .pagination > .disabled > a, 
+        .pagination > .disabled > a:hover, 
+        .pagination > .disabled > a:focus {
+            color: #aaa !important;
+            background-color: #f8f9fa !important;
+            border-color: #ddd !important;
+            cursor: not-allowed !important;
+        }
+
+        /* 검색 버튼 스타일 */
+        #archive-search-btn {
+            background-color: #f0c040 !important;
+            border-color: #f0c040 !important;
+            color: #333 !important;
+            font-weight: bold !important;
+            cursor: pointer !important;
+            transition: all 0.1s ease-in-out;
+        }
+        #archive-search-btn:hover {
+            background-color: #e0b030 !important;
+            border-color: #e0b030 !important;
+        }
+        #archive-search-btn:active {
+            transform: scale(0.96);
+            background-color: #d0a020 !important;
+        }
+    </style>
+</head>
+<body id="page-top" class="index">
+
+    <!-- 영문 slug를 한글 지역명으로 변환하는 매핑 구문 -->
+    {% assign region_slug = page.title %}
+    {% case region_slug %}
+        {% when 'daegu' %}{% assign region_name = '대구광역시' %}
+        {% when 'gangwon' %}{% assign region_name = '강원도' %}
+        {% when 'jeonbuk' %}{% assign region_name = '전라북도' %}
+        {% when 'jeonnam' %}{% assign region_name = '전라남도' %}
+        {% when 'gyeongbuk' %}{% assign region_name = '경상북도' %}
+        {% when 'gyeongnam' %}{% assign region_name = '경상남도' %}
+        {% when 'gwangju' %}{% assign region_name = '광주광역시' %}
+        {% when 'ulsan' %}{% assign region_name = '울산광역시' %}
+        {% when 'busan' %}{% assign region_name = '부산광역시' %}
+        {% else %}{% assign region_name = page.title %}
+    {% endcase %}
+
+    <!-- 상단 네비게이션 -->
+    <nav class="navbar navbar-default navbar-fixed-top navbar-shrink">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <a class="navbar-brand" href="/">{{ site.title }}</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/">메인으로 돌아가기</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 지역별 타이틀 및 검색바 헤더 -->
+    <section style="padding-top: 150px; padding-bottom: 40px; background-color: #f8f9fa;">
+        <div class="container text-center">
+            <h2 style="font-weight: bold; margin-bottom: 15px;">
+                {{ region_name }} 시공 사례
+            </h2>
+            <p class="text-muted" style="font-size: 16px; margin-bottom: 25px;">
+                {{ region_name }} 지역에서 진행한 하우스 고치미의 다양한 시공 사례입니다
+            </p>
+
+            <!-- 해당 지역 내 검색창 -->
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                    <div class="input-group input-group-lg" style="box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                        <input type="text" id="archive-search-input" class="form-control" placeholder="{{ region_name }} 내 작업명 검색 (예: 담장, 방수, 지붕)">
+                        <span class="input-group-btn">
+                            <button id="archive-search-btn" class="btn btn-primary" type="button">
+                                <i class="fa fa-search"></i> 검색
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 해당 지역 포스트 그리드 리스트 -->
+    <section style="padding: 60px 0; background-color: #fff;">
+        <div class="container">
+            <div class="row" id="archive-grid">
+                {% if page.posts.size > 0 %}
+                    {% for post in page.posts %}
+                    
+                    <!-- 단수/복수 카테고리 통합 변수 할당 -->
+                    {% assign post_cats = post.categories | default: post.category %}
+
+                    <div class="col-md-4 col-sm-6 region-post-item" 
+                         data-search-text="{{ post.title }} {% for cat in post_cats %}{{ cat }} {% endfor %}"
+                         style="margin-bottom: 30px;">
+                        <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff;">
+                            
+                            <!-- 썸네일 통합 예외처리 영역 -->
+                            {% if post.thumb_before and post.thumb_after %}
+                                <!-- 1. BEFORE / AFTER 반반 썸네일 -->
+                                <a href="{{ post.url | relative_url }}" style="display: flex; width: 100%; aspect-ratio: 400/289; overflow: hidden; position: relative; text-decoration: none;">
+                                    <div style="width: 50%; height: 100%; position: relative; border-right: 2px solid #fff; overflow: hidden;">
+                                        <img src="{{ post.thumb_before | relative_url }}" alt="시공 전" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
+                                        <span style="position: absolute; bottom: 8px; left: 8px; font-size: 11px; font-weight: bold; padding: 3px 6px; border-radius: 3px; color: #fff; background-color: rgba(220, 53, 69, 0.85); z-index: 2;">BEFORE</span>
+                                    </div>
+                                    <div style="width: 50%; height: 100%; position: relative; overflow: hidden;">
+                                        <img src="{{ post.thumb_after | relative_url }}" alt="시공 후" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
+                                        <span style="position: absolute; bottom: 8px; right: 8px; font-size: 11px; font-weight: bold; padding: 3px 6px; border-radius: 3px; color: #fff; background-color: rgba(40, 167, 69, 0.85); z-index: 2;">AFTER</span>
+                                    </div>
+                                </a>
+                            {% else %}
+                                <!-- 2. 단일 썸네일 (thumbnail / thumb_before / image 중 등록된 경로 자동 감지) -->
+                                {% assign fallback_img = post.thumbnail | default: post.thumb_before | default: post.image %}
+                                {% if fallback_img %}
+                                <a href="{{ post.url | relative_url }}" style="display: block; width: 100%; aspect-ratio: 400/289; overflow: hidden;">
+                                    <img src="{{ fallback_img | relative_url }}" alt="{{ post.title }}" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
+                                </a>
+                                {% endif %}
+                            {% endif %}
+
+                            <!-- 캡션 정보 -->
+                            <div style="padding: 20px;">
+                                <p class="text-muted" style="font-size: 13px; margin-bottom: 8px;">
+                                    <span class="label label-primary">{{ region_name }}</span>
+                                    
+                                    <!-- 카테고리 안전 출력 반복문 -->
+                                    {% for cat in post_cats %}
+                                        <span class="label label-success">{{ cat }}</span>
+                                    {% endfor %}
+
+                                    <span style="float: right;">{{ post.date | date: "%Y.%m.%d" }}</span>
+                                </p>
+                                <h4 style="font-size: 18px; font-weight: bold; margin-top: 10px; margin-bottom: 10px; line-height: 1.4;">
+                                    <a href="{{ post.url | relative_url }}" style="color: #333; text-decoration: none;">
+                                        {{ post.title }}
+                                    </a>
+                                </h4>
+                            </div>
+
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-lg-12 text-center" style="padding: 80px 0;">
+                        <p class="text-muted" style="font-size: 18px;">등록된 시공 사례가 없습니다.</p>
+                    </div>
+                {% endif %}
+
+                <!-- 검색 결과 없을 때 메시지 -->
+                <div id="no-archive-result" class="col-lg-12 text-center" style="display: none; padding: 80px 0;">
+                    <p class="text-muted" style="font-size: 18px;">해당 지역 내 검색 조건에 맞는 시공 사례가 없습니다.</p>
+                </div>
+            </div>
+
+            <!-- 5개 단위 블록 페이지네이션 영역 -->
+            <div class="row text-center" style="margin-top: 20px; margin-bottom: 30px;">
+                <ul class="pagination" id="archive-pagination" style="margin: 0; display: inline-block;"></ul>
+            </div>
+
+            <!-- 하단 버튼 -->
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-lg-12 text-center">
+                    <a href="/" class="btn btn-primary btn-lg" style="margin-right: 8px;">메인으로 돌아가기</a>
+                    <a href="/repair/" class="btn btn-default btn-lg" style="border: 1px solid #ccc;">전체 작업 사례 보기</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include footer.html %}
+    {% include js.html %}
+
+    <!-- 지역 내 수동 검색 & 5개 그룹 페이지네이션 스크립트 -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const itemsPerPage = 12; // 페이지당 12개
+        const pageBlockSize = 5; // 5개 단위 블록
+        
+        const searchInput = document.getElementById("archive-search-input");
+        const searchBtn = document.getElementById("archive-search-btn");
+        const allItems = Array.from(document.querySelectorAll(".region-post-item"));
+        const noResultEl = document.getElementById("no-archive-result");
+        const paginationEl = document.getElementById("archive-pagination");
+
+        let visibleItems = [...allItems];
+        let currentPage = 1;
+
+        // 그리드 & 페이지 버튼 렌더링
+        function render() {
+            const totalPages = Math.ceil(visibleItems.length / itemsPerPage);
+
+            if (visibleItems.length === 0) {
+                noResultEl.style.display = "block";
+                paginationEl.style.display = "none";
+                allItems.forEach(item => item.style.display = "none");
+                return;
+            } else {
+                noResultEl.style.display = "none";
+                paginationEl.style.display = "inline-block";
+            }
+
+            if (currentPage > totalPages) currentPage = 1;
+
+            allItems.forEach(item => item.style.display = "none");
+            visibleItems.forEach((item, index) => {
+                if (index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage) {
+                    item.style.display = "block";
+                }
+            });
+
+            if (totalPages <= 1) {
+                paginationEl.style.display = "none";
+                return;
+            }
+
+            const currentBlock = Math.ceil(currentPage / pageBlockSize);
+            const startPage = (currentBlock - 1) * pageBlockSize + 1;
+            const endPage = Math.min(startPage + pageBlockSize - 1, totalPages);
+
+            let html = '';
+
+            // [이전]
+            if (startPage > 1) {
+                html += `<li><a href="#archive-grid" onclick="changePage(${startPage - 1}); return false;">&laquo; 이전</a></li>`;
+            } else {
+                html += `<li class="disabled"><span>&laquo; 이전</span></li>`;
+            }
+
+            // 숫자
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === currentPage) {
+                    html += `<li class="active"><span>${i}</span></li>`;
+                } else {
+                    html += `<li><a href="#archive-grid" onclick="changePage(${i}); return false;">${i}</a></li>`;
+                }
+            }
+
+            // [다음]
+            if (endPage < totalPages) {
+                html += `<li><a href="#archive-grid" onclick="changePage(${endPage + 1}); return false;">다음 &raquo;</a></li>`;
+            } else {
+                html += `<li class="disabled"><span>다음 &raquo;</span></li>`;
+            }
+
+            paginationEl.innerHTML = html;
+        }
+
+        // 페이지 변경
+        window.changePage = function(page) {
+            currentPage = page;
+            render();
+        };
+
+        // 검색 실행 (해당 지역 포스트 중에서만 필터링)
+        function performSearch() {
+            const query = searchInput.value.trim().toLowerCase();
+
+            visibleItems = allItems.filter(item => {
+                const searchText = item.getAttribute("data-search-text").toLowerCase();
+                return searchText.includes(query);
+            });
+
+            currentPage = 1;
+            render();
+        }
+
+        // 1. [검색] 버튼 클릭 시 동작
+        searchBtn.onclick = function (e) {
+            e.preventDefault();
+            performSearch();
+        };
+
+        // 2. 검색창에서 엔터(Enter) 키 누를 때 동작
+        searchInput.onkeydown = function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                performSearch();
+            }
+        };
+
+        // 초기 실행
+        render();
+    });
+    </script>
+
+</body>
+</html>

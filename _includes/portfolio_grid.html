@@ -1,0 +1,67 @@
+<!-- Portfolio Grid Section -->
+<section id="portfolio" class="bg-light-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2 class="section-heading">작업 사례</h2>
+                <h3 class="section-subheading text-muted">
+                    축적된 시공 경험과 다양한 현장 사례를 공유합니다
+                </h3>
+            </div>
+        </div>
+        <div class="row">
+            {% assign recent_posts = site.posts | slice: 0, 6 %}
+            {% for post in recent_posts %}
+            <div class="col-md-4 col-sm-6 portfolio-item" style="margin-bottom: 30px;">
+                <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff;">
+                    
+                    <!-- 🌟 썸네일 통합 예외처리 영역 -->
+                    {% if post.thumb_before and post.thumb_after %}
+                        <!-- 1. BEFORE / AFTER 반반 분할 썸네일 -->
+                        <a href="{{ post.url | relative_url }}" class="portfolio-link portfolio-img-wrapper" onclick="event.stopPropagation();" style="display: flex; width: 100%; aspect-ratio: 400/289; overflow: hidden; position: relative; text-decoration: none;">
+                            <!-- 시공 전 (왼쪽 50%) -->
+                            <div style="width: 50%; height: 100%; position: relative; border-right: 2px solid #fff; overflow: hidden;">
+                                <img src="{{ post.thumb_before | relative_url }}" alt="시공 전" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
+                                <span style="position: absolute; bottom: 8px; left: 8px; font-size: 11px; font-weight: bold; padding: 3px 6px; border-radius: 3px; color: #fff; background-color: rgba(220, 53, 69, 0.85); z-index: 2;">BEFORE</span>
+                            </div>
+                            <!-- 시공 후 (오른쪽 50%) -->
+                            <div style="width: 50%; height: 100%; position: relative; overflow: hidden;">
+                                <img src="{{ post.thumb_after | relative_url }}" alt="시공 후" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
+                                <span style="position: absolute; bottom: 8px; right: 8px; font-size: 11px; font-weight: bold; padding: 3px 6px; border-radius: 3px; color: #fff; background-color: rgba(40, 167, 69, 0.85); z-index: 2;">AFTER</span>
+                            </div>
+                        </a>
+                    {% else %}
+                        <!-- 2. 단일 썸네일 (thumbnail / thumb_before / image 중 등록된 경로 자동 출력) -->
+                        {% assign fallback_img = post.thumbnail | default: post.thumb_before | default: post.image %}
+                        {% if fallback_img %}
+                        <a href="{{ post.url | relative_url }}" class="portfolio-link portfolio-img-wrapper" onclick="event.stopPropagation();" style="display: block; width: 100%; aspect-ratio: 400/289; overflow: hidden;">
+                            <img src="{{ fallback_img | relative_url }}" class="img-responsive img-centered" alt="{{ post.title }}" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
+                        </a>
+                        {% endif %}
+                    {% endif %}
+
+                    <!-- 캡션 정보 -->
+                    <div class="portfolio-caption" style="padding: 20px;">
+                        <h4>
+                            <a href="{{ post.url | relative_url }}" onclick="event.stopPropagation();" style="color: #333; text-decoration: none;">
+                                {{ post.title }}
+                            </a>
+                        </h4>
+                        <p class="text-muted">
+                            {{ post.location }}
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <a href="/repair/" class="btn btn-xl" onclick="event.stopPropagation();">
+                    작업 사례 더 보기
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

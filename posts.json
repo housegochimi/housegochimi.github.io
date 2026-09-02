@@ -1,0 +1,17 @@
+---
+layout: null
+permalink: /posts.json
+---
+[
+  {% for post in site.posts %}
+  {
+    "title": {{ post.title | jsonify }},
+    "url": {{ post.url | relative_url | jsonify }},
+    "region": {{ post.region | jsonify }},
+    "date": {{ post.date | date_to_xmlschema | jsonify }},
+    "thumb_before": {{ post.thumb_before | relative_url | jsonify }},
+    "thumb_after": {{ post.thumb_after | relative_url | jsonify }},
+    "image": {{ post.image | relative_url | jsonify }}
+  }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+]
