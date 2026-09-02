@@ -53,8 +53,27 @@ document.addEventListener("DOMContentLoaded", function () {
             name: "부산광역시",
             slug: "busan",
             url: "/region=busan/"
+        },
+
+        "KR-30": {
+            name: "대전광역시",
+            slug: "daejeon",
+            url: "/region=daejeon/"
+        },
+
+        "KR-43": {
+            name: "충청북도",
+            slug: "chungbuk",
+            url: "/region=chungbuk/"
+        },
+
+        "KR-44": {
+            name: "충청남도",
+            slug: "chungnam",
+            url: "/region=chungnam/"
         }
     };
+
 
     const map = document.getElementById("service-map");
 

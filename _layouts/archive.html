@@ -74,6 +74,9 @@
         {% when 'gwangju' %}{% assign region_name = '광주광역시' %}
         {% when 'ulsan' %}{% assign region_name = '울산광역시' %}
         {% when 'busan' %}{% assign region_name = '부산광역시' %}
+{% when 'daejeon' %}{% assign region_name = '대전광역시' %}
+        {% when 'chungbuk' %}{% assign region_name = '충청북도' %}
+        {% when 'chungnam' %}{% assign region_name = '충청남도' %}
         {% else %}{% assign region_name = page.title %}
     {% endcase %}
 
