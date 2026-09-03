@@ -3,7 +3,6 @@
 <head>
     {% include head.html %}
     <style>
-        /* 페이지네이션 기본 및 노란색 스타일 */
         .pagination > li > a, 
         .pagination > li > span {
             color: #333 !important;
@@ -50,7 +49,6 @@
 </head>
 <body id="page-top" class="index">
 
-    <!-- 영문 slug를 한글 지역명으로 변환 -->
     {% assign region_slug = page.title %}
     {% case region_slug %}
         {% when 'daegu' %}{% assign region_name = '대구광역시' %}
@@ -68,7 +66,6 @@
         {% else %}{% assign region_name = page.title %}
     {% endcase %}
 
-    <!-- 네비게이션 -->
     <nav class="navbar navbar-default navbar-fixed-top navbar-shrink">
         <div class="container">
             <div class="navbar-header page-scroll">
@@ -82,8 +79,7 @@
         </div>
     </nav>
 
-    <!-- 상단 헤더 영역 (스크롤 타겟 위치) -->
-    <section id="archive-header-target" style="padding-top: 150px; padding-bottom: 40px; background-color: #f8f9fa;">
+    <section id="archive-top-target" style="padding-top: 150px; padding-bottom: 40px; background-color: #f8f9fa;">
         <div class="container text-center">
             <h2 style="font-weight: bold; margin-bottom: 15px;">
                 {{ region_name }} 시공 사례
@@ -107,7 +103,6 @@
         </div>
     </section>
 
-    <!-- 포스트 리스트 -->
     <section style="padding: 60px 0; background-color: #fff;">
         <div class="container">
             <div class="row" id="archive-grid" style="display: flex; flex-wrap: wrap;">
@@ -166,7 +161,6 @@
                 </div>
             </div>
 
-            <!-- 페이지네이션 -->
             <div class="row text-center" style="margin-top: 20px; margin-bottom: 30px;">
                 <ul class="pagination" id="archive-pagination" style="margin: 0; display: inline-block;"></ul>
             </div>
@@ -193,18 +187,16 @@
         const allItems = Array.from(document.querySelectorAll(".region-post-item"));
         const noResultEl = document.getElementById("no-archive-result");
         const paginationEl = document.getElementById("archive-pagination");
-        const headerTarget = document.getElementById("archive-header-target");
 
         let visibleItems = [...allItems];
         let currentPage = 1;
 
-        // 확실한 자동 스크롤 구현 (a 태그 기본 이벤트 무력화 후 실행)
-        function scrollToTopSmooth() {
-            if (headerTarget) {
-                headerTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+        // 즉각적이고 확실한 상단 자동 스크롤 함수
+        function forceScrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         }
 
         function render() {
@@ -241,7 +233,7 @@
             let html = '';
 
             if (startPage > 1) {
-                html += `<li><a data-page="${startPage - 1}">&laquo; 이전</a></li>`;
+                html += `<li><a role="button" data-page="${startPage - 1}">&laquo; 이전</a></li>`;
             } else {
                 html += `<li class="disabled"><span>&laquo; 이전</span></li>`;
             }
@@ -250,28 +242,27 @@
                 if (i === currentPage) {
                     html += `<li class="active"><span>${i}</span></li>`;
                 } else {
-                    html += `<li><a data-page="${i}">${i}</a></li>`;
+                    html += `<li><a role="button" data-page="${i}">${i}</a></li>`;
                 }
             }
 
             if (endPage < totalPages) {
-                html += `<li><a data-page="${endPage + 1}">다음 &raquo;</a></li>`;
+                html += `<li><a role="button" data-page="${endPage + 1}">다음 &raquo;</a></li>`;
             } else {
                 html += `<li class="disabled"><span>다음 &raquo;</span></li>`;
             }
 
             paginationEl.innerHTML = html;
 
-            // 페이지 버튼 이벤트 바인딩 및 자동 스크롤 트리가
-            const pageLinks = paginationEl.querySelectorAll("a[data-page]");
-            pageLinks.forEach(link => {
-                link.addEventListener("click", function (e) {
+            // 페이지 버튼 클릭 핸들러 (이벤트 무력화 후 즉시 스크롤)
+            const links = paginationEl.querySelectorAll("a[data-page]");
+            links.forEach(link => {
+                link.onclick = function (e) {
                     e.preventDefault();
-                    const targetPage = parseInt(this.getAttribute("data-page"));
-                    currentPage = targetPage;
+                    currentPage = parseInt(this.getAttribute("data-page"));
                     render();
-                    scrollToTopSmooth(); // 스크롤 상단 이동 실행
-                });
+                    forceScrollToTop();
+                };
             });
         }
 
@@ -283,7 +274,7 @@
             });
             currentPage = 1;
             render();
-            scrollToTopSmooth();
+            forceScrollToTop();
         }
 
         searchBtn.onclick = function (e) {
