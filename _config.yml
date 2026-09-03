@@ -18,19 +18,17 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-      permalink: /repair/:title-region=경북-:i_month:short_year:i_day
       _options:
         content:
           width: 1500
           height: 2500
 
-# jekyll-archives 태그 전용 설정
 jekyll-archives:
   enabled:
-    - tags
+    - region
   layout: archive
   permalinks:
-    tag: '/region=:name/'
+    region: '/region=:name/'
 
 plugins:
   - jekyll-archives
