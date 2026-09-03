@@ -1,7 +1,31 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+    <title>
+    {% if page.layout == 'archive' %}
+        {% case page.title %}
+            {% when 'daegu' %}작업사례 | 대구광역시
+            {% when 'gangwon' %}작업사례 | 강원도
+            {% when 'jeonbuk' %}작업사례 | 전라북도
+            {% when 'jeonnam' %}작업사례 | 전라남도
+            {% when 'gyeongbuk' %}작업사례 | 경상북도
+            {% when 'gyeongnam' %}작업사례 | 경상남도
+            {% when 'gwangju' %}작업사례 | 광주광역시
+            {% when 'ulsan' %}작업사례 | 울산광역시
+            {% when 'busan' %}작업사례 | 부산광역시
+            {% when 'daejeon' %}작업사례 | 대전광역시
+            {% when 'chungbuk' %}작업사례 | 충청북도
+            {% when 'chungnam' %}작업사례 | 충청남도
+            {% else %}작업사례 | {{ page.title }}
+        {% endcase %}
+    {% elsif page.title %}
+        {{ page.title }}
+    {% else %}
+        {{ site.title }}
+    {% endif %}
+    </title>
+    
+    
     <meta name="viewport" content="width=device-width">
     <meta name="description" content="{{ site.description }}">
     <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
