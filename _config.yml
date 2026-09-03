@@ -25,10 +25,10 @@ defaults:
 
 jekyll-archives:
   enabled:
-    - region
+    - tags
   layout: archive
   permalinks:
-    region: '/region=:name/'
+    tag: '/region=:name/'
 
 plugins:
   - jekyll-archives
