@@ -74,7 +74,7 @@
         {% when 'gwangju' %}{% assign region_name = '광주광역시' %}
         {% when 'ulsan' %}{% assign region_name = '울산광역시' %}
         {% when 'busan' %}{% assign region_name = '부산광역시' %}
-{% when 'daejeon' %}{% assign region_name = '대전광역시' %}
+        {% when 'daejeon' %}{% assign region_name = '대전광역시' %}
         {% when 'chungbuk' %}{% assign region_name = '충청북도' %}
         {% when 'chungnam' %}{% assign region_name = '충청남도' %}
         {% else %}{% assign region_name = page.title %}
@@ -120,10 +120,10 @@
         </div>
     </section>
 
-    <!-- 해당 지역 포스트 그리드 리스트 -->
+    <!-- 해당 지역 포스트 그리드 리스트 (display: flex 적용) -->
     <section style="padding: 60px 0; background-color: #fff;">
         <div class="container">
-            <div class="row" id="archive-grid">
+            <div class="row" id="archive-grid" style="display: flex; flex-wrap: wrap;">
                 {% if page.posts.size > 0 %}
                     {% for post in page.posts %}
                     
@@ -133,7 +133,7 @@
                     <div class="col-md-4 col-sm-6 region-post-item" 
                          data-search-text="{{ post.title }} {% for cat in post_cats %}{{ cat }} {% endfor %}"
                          style="margin-bottom: 30px;">
-                        <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff;">
+                        <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; height: 100%;">
                             
                             <!-- 썸네일 통합 예외처리 영역 -->
                             {% if post.thumb_before and post.thumb_after %}
@@ -149,7 +149,7 @@
                                     </div>
                                 </a>
                             {% else %}
-                                <!-- 2. 단일 썸네일 (thumbnail / thumb_before / image 중 등록된 경로 자동 감지) -->
+                                <!-- 2. 단일 썸네일 -->
                                 {% assign fallback_img = post.thumbnail | default: post.thumb_before | default: post.image %}
                                 {% if fallback_img %}
                                 <a href="{{ post.url | relative_url }}" style="display: block; width: 100%; aspect-ratio: 400/289; overflow: hidden;">
@@ -163,7 +163,6 @@
                                 <p class="text-muted" style="font-size: 13px; margin-bottom: 8px;">
                                     <span class="label label-primary">{{ region_name }}</span>
                                     
-                                    <!-- 카테고리 안전 출력 반복문 -->
                                     {% for cat in post_cats %}
                                         <span class="label label-success">{{ cat }}</span>
                                     {% endfor %}
@@ -210,11 +209,11 @@
     {% include footer.html %}
     {% include js.html %}
 
-    <!-- 지역 내 수동 검색 & 5개 그룹 페이지네이션 스크립트 -->
+    <!-- 자바스크립트 영역 (display 값 및 Flexbox 대응 수정 완료) -->
     <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const itemsPerPage = 12; // 페이지당 12개
-        const pageBlockSize = 5; // 5개 단위 블록
+        const itemsPerPage = 12;
+        const pageBlockSize = 5;
         
         const searchInput = document.getElementById("archive-search-input");
         const searchBtn = document.getElementById("archive-search-btn");
@@ -225,7 +224,6 @@
         let visibleItems = [...allItems];
         let currentPage = 1;
 
-        // 그리드 & 페이지 버튼 렌더링
         function render() {
             const totalPages = Math.ceil(visibleItems.length / itemsPerPage);
 
@@ -244,7 +242,7 @@
             allItems.forEach(item => item.style.display = "none");
             visibleItems.forEach((item, index) => {
                 if (index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage) {
-                    item.style.display = "block";
+                    item.style.display = ""; // flex 레이아웃 유지를 위해 초기값으로 설정
                 }
             });
 
@@ -259,14 +257,12 @@
 
             let html = '';
 
-            // [이전]
             if (startPage > 1) {
                 html += `<li><a href="#archive-grid" onclick="changePage(${startPage - 1}); return false;">&laquo; 이전</a></li>`;
             } else {
                 html += `<li class="disabled"><span>&laquo; 이전</span></li>`;
             }
 
-            // 숫자
             for (let i = startPage; i <= endPage; i++) {
                 if (i === currentPage) {
                     html += `<li class="active"><span>${i}</span></li>`;
@@ -275,7 +271,6 @@
                 }
             }
 
-            // [다음]
             if (endPage < totalPages) {
                 html += `<li><a href="#archive-grid" onclick="changePage(${endPage + 1}); return false;">다음 &raquo;</a></li>`;
             } else {
@@ -285,13 +280,11 @@
             paginationEl.innerHTML = html;
         }
 
-        // 페이지 변경
         window.changePage = function(page) {
             currentPage = page;
             render();
         };
 
-        // 검색 실행 (해당 지역 포스트 중에서만 필터링)
         function performSearch() {
             const query = searchInput.value.trim().toLowerCase();
 
@@ -304,13 +297,11 @@
             render();
         }
 
-        // 1. [검색] 버튼 클릭 시 동작
         searchBtn.onclick = function (e) {
             e.preventDefault();
             performSearch();
         };
 
-        // 2. 검색창에서 엔터(Enter) 키 누를 때 동작
         searchInput.onkeydown = function (e) {
             if (e.key === "Enter") {
                 e.preventDefault();
@@ -318,7 +309,6 @@
             }
         };
 
-        // 초기 실행
         render();
     });
     </script>

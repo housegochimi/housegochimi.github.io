@@ -4,73 +4,73 @@ document.addEventListener("DOMContentLoaded", function () {
         "KR-42": {
             name: "강원도",
             slug: "gangwon",
-            url: "/?region=gangwon/"
+            url: "/region=gangwon/"
         },
 
         "KR-45": {
             name: "전라북도",
             slug: "jeonbuk",
-            url: "/?region=jeonbuk/"
+            url: "/region=jeonbuk/"
         },
 
         "KR-46": {
             name: "전라남도",
             slug: "jeonnam",
-            url: "/?region=jeonnam/"
+            url: "/region=jeonnam/"
         },
 
         "KR-47": {
             name: "경상북도",
             slug: "gyeongbuk",
-            url: "/?region=gyeongbuk/"
+            url: "/region=gyeongbuk/"
         },
 
         "KR-48": {
             name: "경상남도",
             slug: "gyeongnam",
-            url: "/?region=gyeongnam/"
+            url: "/region=gyeongnam/"
         },
 
         "KR-29": {
             name: "광주광역시",
             slug: "gwangju",
-            url: "/?region=gwangju/"
+            url: "/region=gwangju/"
         },
 
         "KR-27": {
             name: "대구광역시",
             slug: "daegu",
-            url: "/?region=daegu/"
+            url: "/region=daegu/"
         },
 
         "KR-31": {
             name: "울산광역시",
             slug: "ulsan",
-            url: "/?region=ulsan/"
+            url: "/region=ulsan/"
         },
 
         "KR-26": {
             name: "부산광역시",
             slug: "busan",
-            url: "/?region=busan/"
+            url: "/region=busan/"
         },
 
         "KR-30": {
             name: "대전광역시",
             slug: "daejeon",
-            url: "/?region=daejeon/"
+            url: "/region=daejeon/"
         },
 
         "KR-43": {
             name: "충청북도",
             slug: "chungbuk",
-            url: "/?region=chungbuk/"
+            url: "/region=chungbuk/"
         },
 
         "KR-44": {
             name: "충청남도",
             slug: "chungnam",
-            url: "/?region=chungnam/"
+            url: "/region=chungnam/"
         }
     };
 
