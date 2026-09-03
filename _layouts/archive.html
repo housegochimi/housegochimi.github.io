@@ -2,13 +2,14 @@
 <html lang="ko">
 <head>
     {% include head.html %}
-    <!-- 노란색 페이지네이션 & 검색 버튼 커스텀 스타일 -->
     <style>
+        /* 페이지네이션 기본 및 노란색 스타일 */
         .pagination > li > a, 
         .pagination > li > span {
             color: #333 !important;
             background-color: #fff !important;
             border: 1px solid #ddd !important;
+            cursor: pointer !important;
         }
 
         .pagination > li > a:hover, 
@@ -31,9 +32,7 @@
         }
 
         .pagination > .disabled > span, 
-        .pagination > .disabled > a, 
-        .pagination > .disabled > a:hover, 
-        .pagination > .disabled > a:focus {
+        .pagination > .disabled > a {
             color: #aaa !important;
             background-color: #f8f9fa !important;
             border-color: #ddd !important;
@@ -46,21 +45,12 @@
             color: #333 !important;
             font-weight: bold !important;
             cursor: pointer !important;
-            transition: all 0.1s ease-in-out;
-        }
-        #archive-search-btn:hover {
-            background-color: #e0b030 !important;
-            border-color: #e0b030 !important;
-        }
-        #archive-search-btn:active {
-            transform: scale(0.96);
-            background-color: #d0a020 !important;
         }
     </style>
 </head>
 <body id="page-top" class="index">
 
-    <!-- 영문 slug를 한글 지역명으로 변환하는 매핑 구문 -->
+    <!-- 영문 slug를 한글 지역명으로 변환 -->
     {% assign region_slug = page.title %}
     {% case region_slug %}
         {% when 'daegu' %}{% assign region_name = '대구광역시' %}
@@ -78,7 +68,7 @@
         {% else %}{% assign region_name = page.title %}
     {% endcase %}
 
-    <!-- 상단 네비게이션 -->
+    <!-- 네비게이션 -->
     <nav class="navbar navbar-default navbar-fixed-top navbar-shrink">
         <div class="container">
             <div class="navbar-header page-scroll">
@@ -92,8 +82,8 @@
         </div>
     </nav>
 
-    <!-- 지역별 타이틀 및 검색바 헤더 -->
-    <section style="padding-top: 150px; padding-bottom: 40px; background-color: #f8f9fa;">
+    <!-- 상단 헤더 영역 (스크롤 타겟 위치) -->
+    <section id="archive-header-target" style="padding-top: 150px; padding-bottom: 40px; background-color: #f8f9fa;">
         <div class="container text-center">
             <h2 style="font-weight: bold; margin-bottom: 15px;">
                 {{ region_name }} 시공 사례
@@ -102,7 +92,6 @@
                 {{ region_name }} 지역에서 진행한 하우스 고치미의 다양한 시공 사례입니다
             </p>
 
-            <!-- 해당 지역 내 검색창 -->
             <div class="row">
                 <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
                     <div class="input-group input-group-lg" style="box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
@@ -118,21 +107,17 @@
         </div>
     </section>
 
-    <!-- 해당 지역 포스트 그리드 리스트 (display: flex 적용) -->
+    <!-- 포스트 리스트 -->
     <section style="padding: 60px 0; background-color: #fff;">
         <div class="container">
             <div class="row" id="archive-grid" style="display: flex; flex-wrap: wrap;">
                 {% if page.posts.size > 0 %}
                     {% for post in page.posts %}
-                    
                     {% assign post_cats = post.categories | default: post.category %}
-
                     <div class="col-md-4 col-sm-6 region-post-item" 
                          data-search-text="{{ post.title }} {% for cat in post_cats %}{{ cat }} {% endfor %}"
                          style="margin-bottom: 30px;">
                         <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; height: 100%;">
-                            
-                            <!-- 썸네일 영역 -->
                             {% if post.thumb_before and post.thumb_after %}
                                 <a href="{{ post.url | relative_url }}" style="display: flex; width: 100%; aspect-ratio: 400/289; overflow: hidden; position: relative; text-decoration: none;">
                                     <div style="width: 50%; height: 100%; position: relative; border-right: 2px solid #fff; overflow: hidden;">
@@ -153,15 +138,12 @@
                                 {% endif %}
                             {% endif %}
 
-                            <!-- 캡션 정보 -->
                             <div style="padding: 20px;">
                                 <p class="text-muted" style="font-size: 13px; margin-bottom: 8px;">
                                     <span class="label label-primary">{{ region_name }}</span>
-                                    
                                     {% for cat in post_cats %}
                                         <span class="label label-success">{{ cat }}</span>
                                     {% endfor %}
-
                                     <span style="float: right;">{{ post.date | date: "%Y.%m.%d" }}</span>
                                 </p>
                                 <h4 style="font-size: 18px; font-weight: bold; margin-top: 10px; margin-bottom: 10px; line-height: 1.4;">
@@ -170,7 +152,6 @@
                                     </a>
                                 </h4>
                             </div>
-
                         </div>
                     </div>
                     {% endfor %}
@@ -180,18 +161,16 @@
                     </div>
                 {% endif %}
 
-                <!-- 검색 결과 없을 때 메시지 -->
                 <div id="no-archive-result" class="col-lg-12 text-center" style="display: none; padding: 80px 0;">
                     <p class="text-muted" style="font-size: 18px;">해당 지역 내 검색 조건에 맞는 시공 사례가 없습니다.</p>
                 </div>
             </div>
 
-            <!-- 5개 단위 블록 페이지네이션 영역 -->
+            <!-- 페이지네이션 -->
             <div class="row text-center" style="margin-top: 20px; margin-bottom: 30px;">
                 <ul class="pagination" id="archive-pagination" style="margin: 0; display: inline-block;"></ul>
             </div>
 
-            <!-- 하단 버튼 -->
             <div class="row" style="margin-top: 20px;">
                 <div class="col-lg-12 text-center">
                     <a href="/" class="btn btn-primary btn-lg" style="margin-right: 8px;">메인으로 돌아가기</a>
@@ -204,7 +183,6 @@
     {% include footer.html %}
     {% include js.html %}
 
-    <!-- 자바스크립트 영역 -->
     <script>
     document.addEventListener("DOMContentLoaded", function () {
         const itemsPerPage = 12;
@@ -215,20 +193,17 @@
         const allItems = Array.from(document.querySelectorAll(".region-post-item"));
         const noResultEl = document.getElementById("no-archive-result");
         const paginationEl = document.getElementById("archive-pagination");
-        const gridSection = document.getElementById("archive-grid");
+        const headerTarget = document.getElementById("archive-header-target");
 
         let visibleItems = [...allItems];
         let currentPage = 1;
 
-        // 상단 스크롤 자동 이동 함수
-        function scrollToGridTop() {
-            if (gridSection) {
-                const elementPosition = gridSection.getBoundingClientRect().top + window.pageYOffset;
-                const offsetPosition = elementPosition - 100; // 상단 헤더 높이 여백 고려
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: "smooth"
-                });
+        // 확실한 자동 스크롤 구현 (a 태그 기본 이벤트 무력화 후 실행)
+        function scrollToTopSmooth() {
+            if (headerTarget) {
+                headerTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
@@ -250,7 +225,7 @@
             allItems.forEach(item => item.style.display = "none");
             visibleItems.forEach((item, index) => {
                 if (index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage) {
-                    item.style.display = ""; 
+                    item.style.display = "block";
                 }
             });
 
@@ -266,7 +241,7 @@
             let html = '';
 
             if (startPage > 1) {
-                html += `<li><a href="javascript:void(0);" onclick="changePage(${startPage - 1});">&laquo; 이전</a></li>`;
+                html += `<li><a data-page="${startPage - 1}">&laquo; 이전</a></li>`;
             } else {
                 html += `<li class="disabled"><span>&laquo; 이전</span></li>`;
             }
@@ -275,36 +250,40 @@
                 if (i === currentPage) {
                     html += `<li class="active"><span>${i}</span></li>`;
                 } else {
-                    html += `<li><a href="javascript:void(0);" onclick="changePage(${i});">${i}</a></li>`;
+                    html += `<li><a data-page="${i}">${i}</a></li>`;
                 }
             }
 
             if (endPage < totalPages) {
-                html += `<li><a href="javascript:void(0);" onclick="changePage(${endPage + 1});">다음 &raquo;</a></li>`;
+                html += `<li><a data-page="${endPage + 1}">다음 &raquo;</a></li>`;
             } else {
                 html += `<li class="disabled"><span>다음 &raquo;</span></li>`;
             }
 
             paginationEl.innerHTML = html;
-        }
 
-        window.changePage = function(page) {
-            currentPage = page;
-            render();
-            scrollToGridTop(); // 페이지 번호 누르면 자동으로 제일 위로 스크롤 이동
-        };
+            // 페이지 버튼 이벤트 바인딩 및 자동 스크롤 트리가
+            const pageLinks = paginationEl.querySelectorAll("a[data-page]");
+            pageLinks.forEach(link => {
+                link.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const targetPage = parseInt(this.getAttribute("data-page"));
+                    currentPage = targetPage;
+                    render();
+                    scrollToTopSmooth(); // 스크롤 상단 이동 실행
+                });
+            });
+        }
 
         function performSearch() {
             const query = searchInput.value.trim().toLowerCase();
-
             visibleItems = allItems.filter(item => {
                 const searchText = item.getAttribute("data-search-text").toLowerCase();
                 return searchText.includes(query);
             });
-
             currentPage = 1;
             render();
-            scrollToGridTop();
+            scrollToTopSmooth();
         }
 
         searchBtn.onclick = function (e) {
