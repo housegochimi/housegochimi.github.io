@@ -3,17 +3,14 @@ baseurl: ""
 
 # Site settings
 title: 하우스 고치미
-email: your-email@domain.com
+email: housegochimi@gmail.com
 description: "집 고칠 일, 어디에 맡겨야 할지 막막할 때"
 
 markdown: kramdown
-permalink: pretty
-
 sitemap: true
 
 paginate: 12
 paginate_path: "/repair/:num/"
-permalink: pretty
 
 defaults:
   - scope:
@@ -21,12 +18,13 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-      permalink: /repair/:title-:i_month:short_year:i_day
+      permalink: /repair/:title-region=경북-:i_month:short_year:i_day
       _options:
         content:
           width: 1500
           height: 2500
 
+# jekyll-archives 태그 전용 설정
 jekyll-archives:
   enabled:
     - tags
@@ -40,7 +38,6 @@ plugins:
   - jekyll-seo-tag
   - jekyll-feed
   - jekyll-paginate
-
 
 exclude:
   - Gemfile

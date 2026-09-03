@@ -4,7 +4,6 @@
     {% include head.html %}
     <!-- 노란색 페이지네이션 & 검색 버튼 커스텀 스타일 -->
     <style>
-        /* 페이지네이션 기본 스타일 */
         .pagination > li > a, 
         .pagination > li > span {
             color: #333 !important;
@@ -41,7 +40,6 @@
             cursor: not-allowed !important;
         }
 
-        /* 검색 버튼 스타일 */
         #archive-search-btn {
             background-color: #f0c040 !important;
             border-color: #f0c040 !important;
@@ -57,30 +55,6 @@
         #archive-search-btn:active {
             transform: scale(0.96);
             background-color: #d0a020 !important;
-        }
-
-        /* Flexbox 그리드 정렬 및 높이 균일화 고정 스타일 */
-        .flex-grid {
-            display: flex !important;
-            flex-wrap: wrap !important;
-        }
-        .flex-grid::before,
-        .flex-grid::after {
-            display: none !important; /* Bootstrap float 해제 개입 방지 */
-        }
-        .region-post-item {
-            display: flex;
-            flex-direction: column;
-        }
-        .card-box {
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #fff;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
         }
     </style>
 </head>
@@ -144,10 +118,10 @@
         </div>
     </section>
 
-    <!-- 해당 지역 포스트 그리드 리스트 -->
+    <!-- 해당 지역 포스트 그리드 리스트 (display: flex 적용) -->
     <section style="padding: 60px 0; background-color: #fff;">
         <div class="container">
-            <div class="row flex-grid" id="archive-grid">
+            <div class="row" id="archive-grid" style="display: flex; flex-wrap: wrap;">
                 {% if page.posts.size > 0 %}
                     {% for post in page.posts %}
                     
@@ -156,47 +130,47 @@
                     <div class="col-md-4 col-sm-6 region-post-item" 
                          data-search-text="{{ post.title }} {% for cat in post_cats %}{{ cat }} {% endfor %}"
                          style="margin-bottom: 30px;">
-                        <div class="card-box">
-                            <div>
-                                <!-- 썸네일 영역 -->
-                                {% if post.thumb_before and post.thumb_after %}
-                                    <a href="{{ post.url | relative_url }}" style="display: flex; width: 100%; aspect-ratio: 400/289; overflow: hidden; position: relative; text-decoration: none;">
-                                        <div style="width: 50%; height: 100%; position: relative; border-right: 2px solid #fff; overflow: hidden;">
-                                            <img src="{{ post.thumb_before | relative_url }}" alt="시공 전" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
-                                            <span style="position: absolute; bottom: 8px; left: 8px; font-size: 11px; font-weight: bold; padding: 3px 6px; border-radius: 3px; color: #fff; background-color: rgba(220, 53, 69, 0.85); z-index: 2;">BEFORE</span>
-                                        </div>
-                                        <div style="width: 50%; height: 100%; position: relative; overflow: hidden;">
-                                            <img src="{{ post.thumb_after | relative_url }}" alt="시공 후" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
-                                            <span style="position: absolute; bottom: 8px; right: 8px; font-size: 11px; font-weight: bold; padding: 3px 6px; border-radius: 3px; color: #fff; background-color: rgba(40, 167, 69, 0.85); z-index: 2;">AFTER</span>
-                                        </div>
-                                    </a>
-                                {% else %}
-                                    {% assign fallback_img = post.thumbnail | default: post.thumb_before | default: post.image %}
-                                    {% if fallback_img %}
-                                    <a href="{{ post.url | relative_url }}" style="display: block; width: 100%; aspect-ratio: 400/289; overflow: hidden;">
-                                        <img src="{{ fallback_img | relative_url }}" alt="{{ post.title }}" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
-                                    </a>
-                                    {% endif %}
+                        <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: #fff; height: 100%;">
+                            
+                            <!-- 썸네일 영역 -->
+                            {% if post.thumb_before and post.thumb_after %}
+                                <a href="{{ post.url | relative_url }}" style="display: flex; width: 100%; aspect-ratio: 400/289; overflow: hidden; position: relative; text-decoration: none;">
+                                    <div style="width: 50%; height: 100%; position: relative; border-right: 2px solid #fff; overflow: hidden;">
+                                        <img src="{{ post.thumb_before | relative_url }}" alt="시공 전" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
+                                        <span style="position: absolute; bottom: 8px; left: 8px; font-size: 11px; font-weight: bold; padding: 3px 6px; border-radius: 3px; color: #fff; background-color: rgba(220, 53, 69, 0.85); z-index: 2;">BEFORE</span>
+                                    </div>
+                                    <div style="width: 50%; height: 100%; position: relative; overflow: hidden;">
+                                        <img src="{{ post.thumb_after | relative_url }}" alt="시공 후" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
+                                        <span style="position: absolute; bottom: 8px; right: 8px; font-size: 11px; font-weight: bold; padding: 3px 6px; border-radius: 3px; color: #fff; background-color: rgba(40, 167, 69, 0.85); z-index: 2;">AFTER</span>
+                                    </div>
+                                </a>
+                            {% else %}
+                                {% assign fallback_img = post.thumbnail | default: post.thumb_before | default: post.image %}
+                                {% if fallback_img %}
+                                <a href="{{ post.url | relative_url }}" style="display: block; width: 100%; aspect-ratio: 400/289; overflow: hidden;">
+                                    <img src="{{ fallback_img | relative_url }}" alt="{{ post.title }}" style="width: 100% !important; height: 100% !important; object-fit: cover !important;">
+                                </a>
                                 {% endif %}
+                            {% endif %}
 
-                                <!-- 캡션 정보 -->
-                                <div style="padding: 20px;">
-                                    <p class="text-muted" style="font-size: 13px; margin-bottom: 8px;">
-                                        <span class="label label-primary">{{ region_name }}</span>
-                                        
-                                        {% for cat in post_cats %}
-                                            <span class="label label-success">{{ cat }}</span>
-                                        {% endfor %}
+                            <!-- 캡션 정보 -->
+                            <div style="padding: 20px;">
+                                <p class="text-muted" style="font-size: 13px; margin-bottom: 8px;">
+                                    <span class="label label-primary">{{ region_name }}</span>
+                                    
+                                    {% for cat in post_cats %}
+                                        <span class="label label-success">{{ cat }}</span>
+                                    {% endfor %}
 
-                                        <span style="float: right;">{{ post.date | date: "%Y.%m.%d" }}</span>
-                                    </p>
-                                    <h4 style="font-size: 18px; font-weight: bold; margin-top: 10px; margin-bottom: 10px; line-height: 1.4;">
-                                        <a href="{{ post.url | relative_url }}" style="color: #333; text-decoration: none;">
-                                            {{ post.title }}
-                                        </a>
-                                    </h4>
-                                </div>
+                                    <span style="float: right;">{{ post.date | date: "%Y.%m.%d" }}</span>
+                                </p>
+                                <h4 style="font-size: 18px; font-weight: bold; margin-top: 10px; margin-bottom: 10px; line-height: 1.4;">
+                                    <a href="{{ post.url | relative_url }}" style="color: #333; text-decoration: none;">
+                                        {{ post.title }}
+                                    </a>
+                                </h4>
                             </div>
+
                         </div>
                     </div>
                     {% endfor %}
@@ -246,10 +220,11 @@
         let visibleItems = [...allItems];
         let currentPage = 1;
 
+        // 상단 스크롤 자동 이동 함수
         function scrollToGridTop() {
             if (gridSection) {
                 const elementPosition = gridSection.getBoundingClientRect().top + window.pageYOffset;
-                const offsetPosition = elementPosition - 100; // 헤더 높이만큼 여백 차감
+                const offsetPosition = elementPosition - 100; // 상단 헤더 높이 여백 고려
                 window.scrollTo({
                     top: offsetPosition,
                     behavior: "smooth"
@@ -275,7 +250,7 @@
             allItems.forEach(item => item.style.display = "none");
             visibleItems.forEach((item, index) => {
                 if (index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage) {
-                    item.style.display = "flex"; // flex 그리드 레이아웃 고정
+                    item.style.display = ""; 
                 }
             });
 
@@ -316,7 +291,7 @@
         window.changePage = function(page) {
             currentPage = page;
             render();
-            scrollToGridTop(); // 페이지 번호 클릭 시 그리드 상단으로 부드럽게 이동
+            scrollToGridTop(); // 페이지 번호 누르면 자동으로 제일 위로 스크롤 이동
         };
 
         function performSearch() {
